@@ -1,0 +1,20 @@
+/* Sidebar styles - using Tailwind utilities in template */
+
+/* Custom scrollbar for sidebar (if content overflows) */
+aside {
+  scrollbar-width: thin;
+  scrollbar-color: #177E94 transparent;
+}
+
+aside::-webkit-scrollbar {
+  width: 6px;
+}
+
+aside::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+aside::-webkit-scrollbar-thumb {
+  background-color: #177E94;
+  border-radius: 3px;
+}

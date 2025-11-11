@@ -1,0 +1,40 @@
+<nav class="fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-200 h-16">
+  <div class="h-full px-4 flex items-center justify-between">
+    <!-- Left Section: Menu Toggle Button -->
+    <button
+      (click)="toggleSidebar()"
+      class="p-2 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#177E94]/20"
+      aria-label="Toggle menu"
+    >
+      <svg
+        class="w-6 h-6 text-gray-600"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        />
+      </svg>
+    </button>
+
+    <!-- Center Section: Logo/Title -->
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-lg bg-[#177E94] flex items-center justify-center">
+        <span class="text-white font-bold text-sm">S</span>
+      </div>
+      <h1 class="text-xl font-semibold text-gray-800 hidden sm:block">SATO</h1>
+    </div>
+
+    <!-- Right Section: Actions (placeholder for future items like profile, notifications) -->
+    <div class="flex items-center gap-2">
+      <!-- You can add more items here like notifications, profile menu, etc. -->
+      <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+        <span class="text-gray-600 text-sm font-medium">U</span>
+      </div>
+    </div>
+  </div>
+</nav>
