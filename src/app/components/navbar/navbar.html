@@ -1,17 +1,12 @@
-<nav class="fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-200 h-16">
-  <div class="h-full px-4 flex items-center justify-between">
+<nav class="fixed top-0 left-0 right-0 z-40 bg-white shadow-sm h-16">
+  <div class="h-full px-4 flex items-center justify-between gap-4">
     <!-- Left Section: Menu Toggle Button -->
     <button
       (click)="toggleSidebar()"
-      class="p-2 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#177E94]/20"
+      class="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#177E94]/20"
       aria-label="Toggle menu"
     >
-      <svg
-        class="w-6 h-6 text-gray-600"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -21,7 +16,7 @@
       </svg>
     </button>
 
-    <!-- Center Section: Logo/Title -->
+    <!-- Center: Logo & Title -->
     <div class="flex items-center gap-2">
       <div class="w-8 h-8 rounded-lg bg-[#177E94] flex items-center justify-center">
         <span class="text-white font-bold text-sm">S</span>
@@ -29,9 +24,46 @@
       <h1 class="text-xl font-semibold text-gray-800 hidden sm:block">SATO</h1>
     </div>
 
-    <!-- Right Section: Actions (placeholder for future items like profile, notifications) -->
-    <div class="flex items-center gap-2">
-      <!-- You can add more items here like notifications, profile menu, etc. -->
+    <!-- Right Section: Outlet Dropdown & Notification -->
+    <div class="flex items-center gap-3">
+      <!-- Outlet Select -->
+      <p-select
+        [(ngModel)]="selectedOutlet"
+        [options]="outletOptions()"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select Outlet"
+        class="w-40 hidden sm:flex"
+      >
+        <ng-template pTemplate="selectedItem">
+          <div class="flex items-center gap-2" *ngIf="selectedOutlet()">
+            <i class="pi pi-shop text-[#177E94]"></i>
+            <span class="text-sm">
+              {{ getSelectedOutletLabel() }}
+            </span>
+          </div>
+        </ng-template>
+        <ng-template let-option pTemplate="item">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-shop text-[#177E94]"></i>
+            <span>{{ option.label }}</span>
+          </div>
+        </ng-template>
+      </p-select>
+
+      <!-- Notification Icon with Badge -->
+      <button class="relative p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Notifications">
+        <i class="pi pi-bell text-xl text-gray-600"></i>
+        @if (notificationCount() > 0) {
+          <span
+            class="absolute top-0 right-0 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full"
+          >
+            {{ notificationCount() }}
+          </span>
+        }
+      </button>
+
+      <!-- User Avatar -->
       <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
         <span class="text-gray-600 text-sm font-medium">U</span>
       </div>

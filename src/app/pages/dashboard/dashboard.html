@@ -1,0 +1,272 @@
+<div class="w-full">
+    <!-- Dashboard Header: Title, Buttons, Date Picker -->
+    <div class="flex flex-col gap-4 mb-6">
+        <!-- Row 1: Title and Buttons -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <!-- Title -->
+            <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
+
+            <!-- Buttons -->
+            <div class="flex gap-2">
+                <p-button label="Export" icon="pi pi-download" (onClick)="onExport()"></p-button>
+
+                <p-button label="List exported" icon="pi pi-list" (onClick)="onListExported()"
+                    [outlined]="true"></p-button>
+            </div>
+        </div>
+
+        <!-- Row 2: Date Picker -->
+        <div class="flex flex-col gap-2">
+            <label for="transaction-date" class="text-sm font-medium text-gray-700 whitespace-nowrap">
+                Select Date Transaction
+            </label>
+            <p-datepicker [(ngModel)]="selectedDate" inputId="transaction-date" [showIcon]="true"
+                placeholder="Select date" dateFormat="dd/mm/yy" class="w-full sm:w-auto"></p-datepicker>
+        </div>
+    </div>
+
+    <!-- Dashboard Stats: Total Revenue Card -->
+    <div class="mb-6">
+        <p-card>
+            <div class="flex flex-col gap-2">
+                <!-- Label -->
+                <p class="text-sm text-gray-600 font-medium">Total Revenue Outlet</p>
+
+                <!-- Revenue Amount -->
+                <p class="text-4xl font-bold text-gray-900">
+                    @if (dashboardStats()) {
+                    {{ dashboardStats()!.totalRevenue | currencyIdr }}
+                    } @else {
+                    <span class="text-gray-400">Loading...</span>
+                    }
+                </p>
+
+                <!-- Transaction Count -->
+                <p class="text-sm text-gray-500">
+                    @if (dashboardStats()) {
+                    From {{ dashboardStats()!.transactionCount }} Transactions
+                    }
+                </p>
+            </div>
+        </p-card>
+    </div>
+
+    <!-- Service Cards Grid: 5 Service Cards -->
+    <div class="mb-8">
+        <!-- Row 1: First 4 cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-4 md:mb-6">
+            @for (card of serviceCards().slice(0, 4); track card.id) {
+            <p-card class="hover:shadow-lg transition-shadow duration-200">
+                <div class="flex flex-col gap-3">
+                    <!-- Icon -->
+                    <div class="w-12 h-12 rounded-lg flex items-center justify-center"
+                        [style.background-color]="card.iconBackgroundColor">
+                        <i class="pi {{ card.icon }} text-2xl text-[#177E94]"></i>
+                    </div>
+
+                    <!-- Service Name -->
+                    <h3 class="text-sm font-semibold text-gray-700">{{ card.name }}</h3>
+
+                    <!-- Revenue -->
+                    <p class="text-2xl font-bold text-gray-900">
+                        {{ card.revenue | currencyIdr }}
+                    </p>
+
+                    <!-- Transaction Count -->
+                    <p class="text-sm text-gray-500">
+                        From {{ card.transactionCount }} Transactions
+                    </p>
+                </div>
+            </p-card>
+            }
+        </div>
+
+        <!-- Row 2: Last card (Store) -->
+        @if (serviceCards().length > 4) {
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            @for (card of serviceCards().slice(4); track card.id) {
+            <p-card class="hover:shadow-lg transition-shadow duration-200">
+                <div class="flex flex-col gap-3">
+                    <!-- Icon -->
+                    <div class="w-12 h-12 rounded-lg flex items-center justify-center"
+                        [style.background-color]="card.iconBackgroundColor">
+                        <i class="pi {{ card.icon }} text-2xl text-[#177E94]"></i>
+                    </div>
+
+                    <!-- Service Name -->
+                    <h3 class="text-sm font-semibold text-gray-700">{{ card.name }}</h3>
+
+                    <!-- Revenue -->
+                    <p class="text-2xl font-bold text-gray-900">
+                        {{ card.revenue | currencyIdr }}
+                    </p>
+
+                    <!-- Transaction Count -->
+                    <p class="text-sm text-gray-500">
+                        From {{ card.transactionCount }} Transactions
+                    </p>
+                </div>
+            </p-card>
+            }
+        </div>
+        }
+    </div>
+
+    <!-- Chart Section: 3 Bar Charts -->
+    <div class="mb-8">
+        <!-- Year Selector -->
+        <div class="flex items-center gap-2 mb-6">
+            <label for="year-select" class="text-sm font-medium text-gray-700 whitespace-nowrap">
+                Select Year
+            </label>
+            <p-select [(ngModel)]="selectedYear" [options]="yearOptions()" optionLabel="label" optionValue="value"
+                inputId="year-select" (onChange)="onYearChange()" class="w-32"></p-select>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="space-y-6">
+            <!-- Row 1: Sales and Cost Charts (side by side on desktop) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Trend Sales Chart -->
+                <p-card>
+                    <ng-template pTemplate="header">
+                        <div class="p-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Trend Sales</h3>
+                        </div>
+                    </ng-template>
+                    <div class="h-64">
+                        @if (salesChartData()) {
+                        <p-chart type="bar" [data]="salesChartData()" [options]="chartOptions" class="h-full"></p-chart>
+                        } @else {
+                        <div class="flex items-center justify-center h-full text-gray-400">
+                            Loading chart...
+                        </div>
+                        }
+                    </div>
+                </p-card>
+
+                <!-- Trend Cost Chart -->
+                <p-card>
+                    <ng-template pTemplate="header">
+                        <div class="p-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Trend Cost</h3>
+                        </div>
+                    </ng-template>
+                    <div class="h-64">
+                        @if (costChartData()) {
+                        <p-chart type="bar" [data]="costChartData()" [options]="chartOptions" class="h-full"></p-chart>
+                        } @else {
+                        <div class="flex items-center justify-center h-full text-gray-400">
+                            Loading chart...
+                        </div>
+                        }
+                    </div>
+                </p-card>
+            </div>
+
+            <!-- Row 2: Profit Chart (full width) -->
+            <div class="grid grid-cols-1">
+                <p-card>
+                    <ng-template pTemplate="header">
+                        <div class="p-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Trend Profit</h3>
+                        </div>
+                    </ng-template>
+                    <div class="h-64 lg:h-80">
+                        @if (profitChartData()) {
+                        <p-chart type="bar" [data]="profitChartData()" [options]="chartOptions"
+                            class="h-full"></p-chart>
+                        } @else {
+                        <div class="flex items-center justify-center h-full text-gray-400">
+                            Loading chart...
+                        </div>
+                        }
+                    </div>
+                </p-card>
+            </div>
+        </div>
+    </div>
+
+    <!-- Billing Table -->
+    <div class="mb-20">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Billing</h2>
+        <p-card>
+            <p-table [value]="billings()" [tableStyle]="{ 'min-width': '60rem' }">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Billing Date</th>
+                        <th>Outlet Name</th>
+                        <th>Order ID</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Payment Date</th>
+                        <th>Action</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-billing>
+                    <tr>
+                        <td>{{ billing.billingDate }}</td>
+                        <td>{{ billing.outletName }}</td>
+                        <td>{{ billing.orderId }}</td>
+                        <td>{{ billing.total | currencyIdr }}</td>
+                        <td>
+                            <p-tag [value]="billing.status" [severity]="getStatusSeverity(billing.status)" />
+                        </td>
+                        <td>{{ billing.startDate }}</td>
+                        <td>{{ billing.endDate }}</td>
+                        <td>{{ billing.paymentDate || '-' }}</td>
+                        <td>
+                            <a (click)="onSeeDetails(billing.orderId)"
+                                class="text-[#177E94] hover:text-[#135f72] cursor-pointer flex items-center gap-1">
+                                <i class="pi pi-search text-sm"></i>
+                                <span>See Details</span>
+                            </a>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-card>
+    </div>
+
+    <!-- Inventory Table -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Inventory</h2>
+        <p-card>
+            <p-table [value]="inventory()" [tableStyle]="{ 'min-width': '60rem' }">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Size / Unit</th>
+                        <th>Code</th>
+                        <th>Usage Limit</th>
+                        <th>Action</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td>
+                            <div class="flex flex-col">
+                                <span class="font-semibold">{{ item.productName }}</span>
+                                <span class="text-sm text-gray-500">{{ item.category }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <p-tag [value]="item.sizeUnit" severity="info" />
+                        </td>
+                        <td>{{ item.code }}</td>
+                        <td>{{ item.usageLimit }}</td>
+                        <td>
+                            <a (click)="onSeeDetails(item.code)"
+                                class="text-[#177E94] hover:text-[#135f72] cursor-pointer flex items-center gap-1">
+                                <i class="pi pi-search text-sm"></i>
+                                <span>See Details</span>
+                            </a>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-card>
+    </div>
+</div>
